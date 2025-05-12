@@ -1,0 +1,86 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int       @id @default(autoincrement())
+  email    String    @unique
+  password String
+  role     Role
+  parentOf Student[] @relation("ParentStudents")
+
+  @@map("users")
+}
+
+model Student {
+  id          Int           @id @default(autoincrement())
+  name        String
+  grades      Grade[]
+  attendance  Attendance[]
+  parents     User[]        @relation("ParentStudents")
+  achievement Achievement[]
+
+  @@map("students")
+}
+
+model Staff {
+  id   Int    @id @default(autoincrement())
+  name String
+  role String
+
+  @@map("staff")
+}
+
+model Coach {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  @@map("coaches")
+}
+
+model Achievement {
+  id        Int      @id @default(autoincrement())
+  title     String
+  year      Int
+  student   Student? @relation(fields: [studentId], references: [id])
+  studentId Int?
+
+  @@map("achievements")
+}
+
+model Grade {
+  id        Int     @id @default(autoincrement())
+  subject   String
+  score     Float
+  student   Student @relation(fields: [studentId], references: [id])
+  studentId Int
+
+  @@map("grades")
+}
+
+model Attendance {
+  id        Int      @id @default(autoincrement())
+  date      DateTime
+  present   Boolean
+  student   Student  @relation(fields: [studentId], references: [id])
+  studentId Int
+
+  @@map("attendance")
+}
+
+enum Role {
+  ADMIN
+  USER
+  GUEST
+}
