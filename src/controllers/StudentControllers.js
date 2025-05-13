@@ -9,7 +9,8 @@ class StudentControllers {
             const students = await prisma.student.findMany({
                 select: {
                     id: true,
-                    name: true
+                    name: true,
+                    photoUrl: true,
                 }
             });
             return res.status(200).json(students);
@@ -155,6 +156,26 @@ class StudentControllers {
             return res.status(200).json({ message: 'Student deleted successfully' });
         } catch (error) {
             console.error('Error deleting student:', error);
+            return res.status(500).json({ message: 'Server error' });
+        }
+    }
+
+    async uploadStudentImage(req, res) {
+        try {
+            const { id } = req.params;
+            const fileUrl = req.file.location; // URL dari AWS S3
+
+            const updatedStudent = await prisma.student.update({
+                where: { id: parseInt(id) },
+                data: { photoUrl: fileUrl }
+            });
+
+            return res.status(200).json({
+                message: 'Photo uploaded successfully',
+                student: updatedStudent
+            });
+        } catch (error) {
+            console.error('Error uploading photo:', error);
             return res.status(500).json({ message: 'Server error' });
         }
     }

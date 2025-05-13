@@ -6,7 +6,7 @@ const upload = multer({
     storage: multerS3({
         s3,
         bucket: process.env.AWS_BUCKET_NAME,
-        acl: 'public-read',
+        contentType: multerS3.AUTO_CONTENT_TYPE,
         metadata: (req, file, cb) => {
             cb(null, { fieldName: file.fieldname });
         },
@@ -14,7 +14,7 @@ const upload = multer({
             cb(null, `uploads/${Date.now()}-${file.originalname}`);
         }
     }),
-    limits: { fileSize: 2 * 1024 * 1024 }, // Max 2MB
+    limits: { fileSize: 8 * 1024 * 1024 }, // Max 8MB
     fileFilter: (req, file, cb) => {
         const allowedTypes = ['image/jpeg', 'image/png'];
         if (allowedTypes.includes(file.mimetype)) {

@@ -4,7 +4,13 @@ class CoachControllers {
 
     async getAllCoaches(req, res) {
         try {
-            const coaches = await prisma.coach.findMany();
+            const coaches = await prisma.coach.findMany({
+                select: {
+                    id: true,
+                    name: true,
+                    photoUrl: true,
+                }
+            });
             return res.status(200).json(coaches);
         } catch (error) {
             console.error('Error fetching coaches:', error);
@@ -84,6 +90,26 @@ class CoachControllers {
             return res.status(500).json({ message: 'Server error' });
         }
 
+    }
+
+    async uploadCoachImage(req, res) {
+        try {
+            const { id } = req.params;
+            const fileUrl = req.file.location; // URL dari AWS S3
+
+            const updatedStudent = await prisma.coach.update({
+                where: { id: parseInt(id) },
+                data: { photoUrl: fileUrl }
+            });
+
+            return res.status(200).json({
+                message: 'Photo uploaded successfully',
+                student: updatedStudent
+            });
+        } catch (error) {
+            console.error('Error uploading photo:', error);
+            return res.status(500).json({ message: 'Server error' });
+        }
     }
 }
 
