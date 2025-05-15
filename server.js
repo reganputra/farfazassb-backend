@@ -2,6 +2,7 @@
 import express from 'express';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
+import cors from 'cors';
 
 
 import adminRoutes from "./src/routes/adminRoutes.js";
@@ -15,6 +16,7 @@ const port = process.env.PORT
 app.use(express.json());
 app.use(express.urlencoded({ extended : true }))
 app.use(helmet());
+app.use(cors());
 
 // Routes
 app.use('/api/auth', authRoutes);
