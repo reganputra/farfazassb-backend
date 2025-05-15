@@ -78,7 +78,7 @@ class StudentControllers {
             if (parentIds.length > 0) {
                 data.parents = {
                     connect: parentIds.map(id => ({ id: parseInt(id) }))
-                };
+                }; // if there is no parentIds, it will not create any relation
             }
 
             const student = await prisma.student.create({
@@ -117,7 +117,7 @@ class StudentControllers {
                     };
                 } else {
                     updateData.parents = {
-                        set: [] // Hapus semua relasi orang tua jika kosong
+                        set: [] // delete all children relation if empty
                     };
                 }
             }
@@ -151,7 +151,7 @@ class StudentControllers {
                 prisma.grade.deleteMany({ where: { studentId: parseInt(id) } }),
                 prisma.attendance.deleteMany({ where: { studentId: parseInt(id) } }),
                 prisma.student.delete({ where: { id: parseInt(id) } })
-            ]);
+            ]); // delete all related grades and attendance records before deleting the student
 
             return res.status(200).json({ message: 'Student deleted successfully' });
         } catch (error) {
@@ -163,7 +163,7 @@ class StudentControllers {
     async uploadStudentImage(req, res) {
         try {
             const { id } = req.params;
-            const fileUrl = req.file.location; // URL dari AWS S3
+            const fileUrl = req.file.location; // URL from AWS S3
 
             const updatedStudent = await prisma.student.update({
                 where: { id: parseInt(id) },

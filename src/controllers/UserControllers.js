@@ -123,7 +123,7 @@ class UserControllers {
                     };
                 } else {
                     updateData.parentOf = {
-                        set: [] // Hapus semua relasi anak jika kosong
+                        set: [] // delete all children relation if empty
                     };
                 }
             }

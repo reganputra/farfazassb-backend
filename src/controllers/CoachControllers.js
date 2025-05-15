@@ -95,7 +95,7 @@ class CoachControllers {
     async uploadCoachImage(req, res) {
         try {
             const { id } = req.params;
-            const fileUrl = req.file.location; // URL dari AWS S3
+            const fileUrl = req.file.location;
 
             const updatedStudent = await prisma.coach.update({
                 where: { id: parseInt(id) },
