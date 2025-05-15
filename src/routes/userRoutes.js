@@ -3,6 +3,9 @@ import express from "express";
 import { authenticate, isUser } from "../middleware/auth.js";
 import UserController from "../controllers/UserControllers.js";
 
+
+
+
 const router = express.Router();
 
 // Apply authentication and user middleware to all routes

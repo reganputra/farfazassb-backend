@@ -1,17 +1,19 @@
 import express from 'express';
 import AuthController from '../controllers/AuthControllers.js';
+import {validateBody} from "../middleware/validateBody.js";
+import { hashPassword } from '../utils/passwordUtil.js';
+import prisma from '../config/db.js';
+import Validate from "../middleware/validation.js";
+
 
 const router = express.Router();
 
 // Auth routes
-router.post('/register', AuthController.register);
-router.post('/login', AuthController.login);
+router.post('/register',validateBody(Validate.registerSchema), AuthController.register);
+router.post('/login',validateBody(Validate.loginSchema), AuthController.login);
 
 
-// ONLY FOR DEV/SEEDING
-import { hashPassword } from '../utils/passwordUtil.js';
-import prisma from '../config/db.js';
-
+// ONLY FOR DEV
 router.post('/dev-create-admin', async (req, res) => {
     try {
         const { email, password } = req.body;

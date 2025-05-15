@@ -1,6 +1,8 @@
 
 import express from 'express';
 import {authenticate, isAdmin} from "../middleware/auth.js";
+import {validateBody} from "../middleware/validateBody.js";
+import Validate from "../middleware/validation.js";
 
 
 import UserController from "../controllers/UserControllers.js";
@@ -12,6 +14,8 @@ import CoachController from "../controllers/CoachControllers.js";
 import AttendanceController from "../controllers/AttendanceControllers.js";
 import upload from "../middleware/uploadS3.js";
 
+
+
 const router = express.Router();
 
 router.use(authenticate, isAdmin);
@@ -19,7 +23,7 @@ router.use(authenticate, isAdmin);
 // Student routes
 router.get('/students', StudentController.getAllStudents);
 router.get('/students/:id', StudentController.getStudentById);
-router.post('/students', StudentController.createStudent);
+router.post('/students',validateBody(Validate.studentSchema) ,StudentController.createStudent);
 router.put('/students/:id', StudentController.updateStudent);
 router.delete('/students/:id', StudentController.deleteStudent);
 router.post('/students/:id/photo', upload.single('photo'), StudentController.uploadStudentImage)
@@ -33,35 +37,35 @@ router.delete('/staff/:id', StaffController.deleteStaff);
 
 // Coach routes
 router.get('/coaches/:id', CoachController.getCoachesById);
-router.post('/coaches', CoachController.createCoach);
+router.post('/coaches',validateBody(Validate.coachSchema), CoachController.createCoach);
 router.put('/coaches/:id', CoachController.updateCoach);
 router.delete('/coaches/:id', CoachController.deleteCoach);
 router.post('/coaches/:id/photo', upload.single('photo'), CoachController.uploadCoachImage)
 
 // Achievement routes
 router.get('/achievements/:id', AchievementController.getAchievementById);
-router.post('/achievements', AchievementController.createAchievement);
+router.post('/achievements', validateBody(Validate.achievementSchema), AchievementController.createAchievement);
 router.put('/achievements/:id', AchievementController.updateAchievement);
 router.delete('/achievements/:id', AchievementController.deleteAchievement);
 
 // Grade routes
 router.get('/students/:studentId/grades', GradeController.getGradesByStudentId);
 router.get('/grades/:id', GradeController.getGradeById);
-router.post('/grades', GradeController.addGrade);
+router.post('/grades',validateBody(Validate.gradeSchema) ,GradeController.addGrade);
 router.put('/grades/:id', GradeController.updateGrade);
 router.delete('/grades/:id', GradeController.deleteGrade);
 
 // Attendance routes
 router.get('/students/:studentId/attendance', AttendanceController.getAttendanceByStudentId);
 router.get('/attendance/:id', AttendanceController.getAttendanceById);
-router.post('/attendance', AttendanceController.createAttendance);
+router.post('/attendance',validateBody(Validate.attendanceSchema) ,AttendanceController.createAttendance);
 router.put('/attendance/:id', AttendanceController.updateAttendance);
 router.delete('/attendance/:id', AttendanceController.deleteAttendance);
 
 // User management routes
 router.get('/users', UserController.getAllUsers);
 router.get('/users/:id', UserController.getUserById);
-router.post('/users', UserController.createUser);
+router.post('/users',validateBody(Validate.userSchema), UserController.createUser);
 router.put('/users/:id', UserController.updateUser);
 router.delete('/users/:id', UserController.deleteUser);
 
