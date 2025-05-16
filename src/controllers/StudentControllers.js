@@ -73,7 +73,8 @@ class StudentControllers {
     async createStudent(req, res) {
         try {
             const { name, parentIds = [] } = req.body;
-            const data = { name };
+            const data = { name, photoUrl: req.file?.location, };
+
 
             if (parentIds.length > 0) {
                 data.parents = {
@@ -156,26 +157,6 @@ class StudentControllers {
             return res.status(200).json({ message: 'Student deleted successfully' });
         } catch (error) {
             console.error('Error deleting student:', error);
-            return res.status(500).json({ message: 'Server error' });
-        }
-    }
-
-    async uploadStudentImage(req, res) {
-        try {
-            const { id } = req.params;
-            const fileUrl = req.file.location; // URL from AWS S3
-
-            const updatedStudent = await prisma.student.update({
-                where: { id: parseInt(id) },
-                data: { photoUrl: fileUrl }
-            });
-
-            return res.status(200).json({
-                message: 'Photo uploaded successfully',
-                student: updatedStudent
-            });
-        } catch (error) {
-            console.error('Error uploading photo:', error);
             return res.status(500).json({ message: 'Server error' });
         }
     }

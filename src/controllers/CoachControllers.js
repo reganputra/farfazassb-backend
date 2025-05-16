@@ -41,10 +41,12 @@ class CoachControllers {
     async createCoach(req, res) {
         try {
             const { name } = req.body;
+            const photoUrl  = req.file.location;
 
             const coach = await prisma.coach.create({
                 data: {
-                    name
+                    name,
+                    photoUrl
                 }
             });
 
@@ -92,25 +94,7 @@ class CoachControllers {
 
     }
 
-    async uploadCoachImage(req, res) {
-        try {
-            const { id } = req.params;
-            const fileUrl = req.file.location;
 
-            const updatedStudent = await prisma.coach.update({
-                where: { id: parseInt(id) },
-                data: { photoUrl: fileUrl }
-            });
-
-            return res.status(200).json({
-                message: 'Photo uploaded successfully',
-                student: updatedStudent
-            });
-        } catch (error) {
-            console.error('Error uploading photo:', error);
-            return res.status(500).json({ message: 'Server error' });
-        }
-    }
 }
 
 export default new CoachControllers();
