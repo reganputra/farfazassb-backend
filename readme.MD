@@ -40,3 +40,6 @@ AWS_SECRET_ACCESS_KEY=YOUR_AWS_SECRET_ACCESS_KEY
 ```bash
 npm run dev
 ```
+
+### API Documentation
+[Api Docs](https://documenter.getpostman.com/view/29029871/2sB2j3ArFa)
