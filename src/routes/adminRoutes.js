@@ -13,6 +13,7 @@ import AchievementController from "../controllers/AchievementControllers.js";
 import CoachController from "../controllers/CoachControllers.js";
 import AttendanceController from "../controllers/AttendanceControllers.js";
 import upload from "../middleware/uploadS3.js";
+import {parseArrayFields} from "../middleware/parsedArrayField.js";
 
 
 
@@ -23,10 +24,10 @@ router.use(authenticate, isAdmin);
 // Student routes
 router.get('/students', StudentController.getAllStudents);
 router.get('/students/:id', StudentController.getStudentById);
-router.post('/students',validateBody(Validate.studentSchema) ,StudentController.createStudent);
+router.post('/students',upload.single('photo'),parseArrayFields(['parentIds']),validateBody(Validate.studentSchema) ,StudentController.createStudent);
 router.put('/students/:id', StudentController.updateStudent);
 router.delete('/students/:id', StudentController.deleteStudent);
-router.post('/students/:id/photo', upload.single('photo'), StudentController.uploadStudentImage)
+
 
 // Staff routes
 router.get('/staff', StaffController.getAllStaff);
@@ -37,10 +38,10 @@ router.delete('/staff/:id', StaffController.deleteStaff);
 
 // Coach routes
 router.get('/coaches/:id', CoachController.getCoachesById);
-router.post('/coaches',validateBody(Validate.coachSchema), CoachController.createCoach);
+router.post('/coaches',upload.single('photo'),validateBody(Validate.coachSchema),CoachController.createCoach);
 router.put('/coaches/:id', CoachController.updateCoach);
 router.delete('/coaches/:id', CoachController.deleteCoach);
-router.post('/coaches/:id/photo', upload.single('photo'), CoachController.uploadCoachImage)
+
 
 // Achievement routes
 router.get('/achievements/:id', AchievementController.getAchievementById);
