@@ -35,6 +35,10 @@ AWS_BUCKET_NAME=YOUR_BUCKET_NAME
 AWS_BUCKET_REGION=YOUR_BUCKET_AWS_BUCKET_REGION
 AWS_ACCESS_KEY_ID=YOUR_AWS_ACCESS_KEY_ID
 AWS_SECRET_ACCESS_KEY=YOUR_AWS_SECRET_ACCESS_KEY
+
+#in schema.prisma 
+provider = "postgresql"
+#change to your database provider (postgres/mysql)
  ```
 ### Run the app
 ```bash
