@@ -4,6 +4,7 @@ import {validateBody} from "../middleware/validateBody.js";
 import { hashPassword } from '../utils/passwordUtil.js';
 import prisma from '../config/db.js';
 import Validate from "../middleware/validation.js";
+import { isAdmin } from '../middleware/auth.js';
 
 
 const router = express.Router();
@@ -12,9 +13,7 @@ const router = express.Router();
 router.post('/register',validateBody(Validate.registerSchema), AuthController.register);
 router.post('/login',validateBody(Validate.loginSchema), AuthController.login);
 
-
-// ONLY FOR DEV
-router.post('/dev-create-admin', async (req, res) => {
+router.post('/dev-create-admin', isAdmin ,async (req, res) => {
     try {
         const { email, password } = req.body;
         const existing = await prisma.user.findUnique({ where: { email } });

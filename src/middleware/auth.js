@@ -20,17 +20,24 @@ const authenticate = async (req, res, next) => {
 }
 
 const isAdmin = (req, res, next) => {
-    if (req.user.role !== 'ADMIN') {
-        return res.status(403).json({ message: 'Admin access required' });
+    if (req.user.role !== 'SUPER_ADMIN') {
+        return res.status(403).json({ message: 'Super Admin access required' });
     }
     next();
 };
 
-const isUser = (req, res, next) => {
-    if (req.user.role !== 'USER') {
-        return res.status(403).json({ message: 'User access required' });
+const isCoachAndAdmin = (req, res, next) => {
+    if (req.user.role !== 'COACH' && req.user.role !== 'SUPER_ADMIN') {
+        return res.status(403).json({ message: 'Coach access required' });
     }
     next();
 };
 
-export { authenticate, isAdmin, isUser };
+const isAll = (req, res, next) => {
+    if (req.user.role !== 'SUPER_ADMIN' && req.user.role !== 'COACH' && req.user.role !== 'USER') {
+        return res.status(403).json({ message: 'Access required' });
+    }
+    next();
+};
+
+export { authenticate, isAdmin,isCoachAndAdmin, isAll };

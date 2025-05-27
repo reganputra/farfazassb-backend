@@ -18,7 +18,7 @@ app.use(express.urlencoded({ extended : true }))
 app.use(helmet());
 app.use(cors());
 
-// Routes
+
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);

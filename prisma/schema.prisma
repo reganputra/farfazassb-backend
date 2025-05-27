@@ -82,6 +82,7 @@ model Attendance {
 }
 
 enum Role {
+  SUPER_ADMIN
   ADMIN
   USER
   GUEST

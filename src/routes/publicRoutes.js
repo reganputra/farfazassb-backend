@@ -6,7 +6,7 @@ import AchievementController from "../controllers/AchievementControllers.js";
 
 const router = express.Router();
 
-// Public routes for anyone to access
+// Public routes
 router.get('/students', StudentController.getAllStudentsPublic);
 router.get('/coaches', CoachController.getAllCoaches);
 router.get('/achievements', AchievementController.getAllAchievements);

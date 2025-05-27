@@ -1,6 +1,6 @@
 
 import express from 'express';
-import {authenticate, isAdmin} from "../middleware/auth.js";
+import {authenticate, isAdmin, isCoachAndAdmin} from "../middleware/auth.js";
 import {validateBody} from "../middleware/validateBody.js";
 import Validate from "../middleware/validation.js";
 
@@ -19,7 +19,7 @@ import {parseArrayFields} from "../middleware/parsedArrayField.js";
 
 const router = express.Router();
 
-router.use(authenticate, isAdmin);
+router.use(authenticate, isCoachAndAdmin);
 
 // Student routes
 router.get('/students', StudentController.getAllStudents);
@@ -27,7 +27,6 @@ router.get('/students/:id', StudentController.getStudentById);
 router.post('/students',upload.single('photo'),parseArrayFields(['parentIds']),validateBody(Validate.studentSchema) ,StudentController.createStudent);
 router.put('/students/:id', StudentController.updateStudent);
 router.delete('/students/:id', StudentController.deleteStudent);
-
 
 // Staff routes
 router.get('/staff', StaffController.getAllStaff);
