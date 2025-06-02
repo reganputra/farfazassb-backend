@@ -1,6 +1,6 @@
 
 import express from 'express';
-import {authenticate, isAdmin, isCoachAndAdmin} from "../middleware/auth.js";
+import {authenticate, isCoachAndAdmin} from "../middleware/auth.js";
 import {validateBody} from "../middleware/validateBody.js";
 import Validate from "../middleware/validation.js";
 
