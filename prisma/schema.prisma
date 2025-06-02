@@ -9,7 +9,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -83,7 +83,7 @@ model Attendance {
 
 enum Role {
   SUPER_ADMIN
-  ADMIN
+  COACH
   USER
   GUEST
 }
