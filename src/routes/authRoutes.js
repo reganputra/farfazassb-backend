@@ -4,7 +4,7 @@ import {validateBody} from "../middleware/validateBody.js";
 import { hashPassword } from '../utils/passwordUtil.js';
 import prisma from '../config/db.js';
 import Validate from "../middleware/validation.js";
-import { isAdmin } from '../middleware/auth.js';
+import { isAdmin, authenticate } from '../middleware/auth.js';
 
 
 const router = express.Router();
@@ -13,7 +13,7 @@ const router = express.Router();
 router.post('/register',validateBody(Validate.registerSchema), AuthController.register);
 router.post('/login',validateBody(Validate.loginSchema), AuthController.login);
 
-router.post('/dev-create-admin', isAdmin ,async (req, res) => {
+router.post('/dev-create-coach',authenticate, isAdmin ,async (req, res) => {
     try {
         const { email, password } = req.body;
         const existing = await prisma.user.findUnique({ where: { email } });
@@ -24,11 +24,11 @@ router.post('/dev-create-admin', isAdmin ,async (req, res) => {
             data: {
                 email,
                 password: hashed,
-                role: 'ADMIN'
+                role: 'COACH'
             }
         });
 
-        res.status(201).json({ message: 'Admin created', admin });
+        res.status(201).json({ message: 'Coach account created', admin });
     } catch (err) {
         console.error('Admin creation error:', err);
         res.status(500).json({ message: 'Server error' });
