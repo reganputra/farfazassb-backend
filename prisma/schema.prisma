@@ -24,13 +24,19 @@ model User {
 }
 
 model Student {
-  id          Int           @id @default(autoincrement())
-  name        String
-  photoUrl    String?
-  grades      Grade[]
-  attendance  Attendance[]
-  parents     User[]        @relation("ParentStudents")
-  achievement Achievement[]
+  id           Int           @id @default(autoincrement())
+  name         String
+  photoUrl     String?
+  gender       Gender
+  tempatLahir  String
+  tanggalLahir DateTime
+  age          Int
+  level        String
+  kategoriBMI  BMI
+  grades       Grade[]
+  attendance   Attendance[]
+  parents      User[]        @relation("ParentStudents")
+  achievement  Achievement[]
 
   @@map("students")
 }
@@ -86,4 +92,15 @@ enum Role {
   COACH
   USER
   GUEST
+}
+
+enum Gender {
+  L
+  P
+}
+
+enum BMI {
+  NORMAL
+  OVERWEIGHT
+  UNDERWEIGHT
 }
