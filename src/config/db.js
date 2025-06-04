@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // Check if DATABASE_URL exists through console log
-console.log('DATABASE_URL exists:', Boolean(process.env.DATABASE_URL));
+console.log('DATABASE_URL exists:', String(process.env.DATABASE_URL));
 
 const prisma = new PrismaClient();
 
