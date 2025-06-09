@@ -18,6 +18,24 @@ class StudentControllers {
     }
   }
 
+  async getAllStudentsByCoach(req,res){
+
+    const { coachId } = req.params;
+
+    try {
+      const students = await prisma.student.findMany({
+        where : {
+          coachId: parseInt(coachId)
+        }
+      })
+
+      return res.status(200).json(students);
+    } catch (error) {
+      console.error("Error fetching students:", error);
+      return res.status(500).json({ message: "Server error" });
+    }
+  }
+
   // Admin access
   async getAllStudents(req, res) {
     try {
@@ -25,7 +43,13 @@ class StudentControllers {
         include: {
           grades: true,
           attendance: true,
-          parents: {
+          parent: {
+            select: {
+              id: true,
+              email: true,
+            },
+          },
+          coach: {
             select: {
               id: true,
               email: true,
@@ -69,55 +93,60 @@ class StudentControllers {
   }
 
   async createStudent(req, res) {
-    try {
-      const {
-        name,
-        parentIds = [],
-        age,
-        gender,
-        level,
-        tanggalLahir,
-        tempatLahir,
-        kategoriBMI,
-      } = req.body;
-      const data = {
-        name,
-        photoUrl: req.file?.location,
-        age,
-        gender,
-        level,
-        tanggalLahir,
-        tempatLahir,
-        kategoriBMI,
+  try {
+    const {
+      name,
+      parentId,
+      coachId,
+      age,
+      gender,
+      level,
+      tanggalLahir,
+      tempatLahir,
+      kategoriBMI,
+    } = req.body;
+
+    const data = {
+      name,
+      photoUrl: req.file?.location,
+      age: parseInt(age),
+      gender,
+      level,
+      tanggalLahir: new Date(tanggalLahir),
+      tempatLahir,
+      kategoriBMI,
+    };
+
+    if (parentId) {
+      data.parent = {
+        connect: { id: parseInt(parentId) },
       };
-
-      if (parentIds.length > 0) {
-        data.parents = {
-          connect: parentIds.map((id) => ({ id: parseInt(id) })),
-        };
-      }
-
-      const student = await prisma.student.create({
-        data: {
-          ...data,
-          age: parseInt(age),
-        },
-        include: {
-          parents: {
-            select: {
-              id: true,
-              email: true,
-            },
-          },
-        },
-      });
-
-      return res.status(201).json(student);
-    } catch (error) {
-      console.error("Error creating student:", error);
-      return res.status(500).json({ message: "Server error" });
     }
+
+    if (coachId) {
+      data.coach = {
+        connect: { id: parseInt(coachId) },
+      };
+    }
+
+    const student = await prisma.student.create({
+      data,
+      include: {
+        parent: {
+          select: { id: true, email: true },
+        },
+        coach: {
+          select: { id: true, email: true },
+        },
+      },
+    });
+
+    return res.status(201).json(student);
+  } catch (error) {
+    console.error("Error creating student:", error);
+    return res.status(500).json({ message: "Server error" });
   }
+}
 
   async updateStudent(req, res) {
     try {

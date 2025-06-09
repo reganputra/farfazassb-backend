@@ -23,6 +23,7 @@ router.use(authenticate, isCoachAndAdmin);
 
 // Student routes
 router.get('/students', StudentController.getAllStudents);
+router.get('/students/coach/:coachId', StudentController.getAllStudentsByCoach);
 router.get('/students/:id', StudentController.getStudentById);
 router.post('/students',upload.single('photo'),parseArrayFields(['parentIds']),validateBody(Validate.studentSchema) ,StudentController.createStudent);
 router.put('/students/:id', StudentController.updateStudent);

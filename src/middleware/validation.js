@@ -21,7 +21,8 @@ class Validate {
   static get studentSchema() {
     return Joi.object({
       name: Joi.string().required(),
-      parentIds: Joi.array().items(Joi.number()).optional(),
+      parentId: Joi.number().optional(),
+      coachId: Joi.number().optional(),
       age: Joi.string().required(),
       gender: Joi.string().valid("L", "P").required(),
       level: Joi.string().required(),

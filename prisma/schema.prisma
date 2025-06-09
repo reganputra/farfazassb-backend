@@ -9,21 +9,22 @@ datasource db {
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
-  email    String    @unique
-  password String
-  role     Role
-  telp     String?
-  name     String?
-  photoUrl String?
-  gender   String?
-  parentOf Student[] @relation("ParentStudents")
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  password  String
+  role      Role
+  telp      String?
+  name      String?
+  photoUrl  String?
+  gender    String?
 
+  parentOf  Student[] @relation("ParentStudents") 
+  CoachOf   Student[] @relation("CoachStudents") 
   @@map("users")
 }
 
 model Student {
-  id           Int           @id @default(autoincrement())
+  id           Int      @id @default(autoincrement())
   name         String
   photoUrl     String?
   age          Int
@@ -32,10 +33,16 @@ model Student {
   level        String
   tanggalLahir DateTime
   tempatLahir  String
+
+  coachId      Int?
+  coach        User?     @relation("CoachStudents", fields: [coachId], references: [id])
+
+  parentId     Int?
+  parent       User?    @relation("ParentStudents", fields: [parentId], references: [id])
+
   achievement  Achievement[]
   attendance   Attendance[]
   grades       Grade[]
-  parents      User[]        @relation("ParentStudents")
 
   @@map("students")
 }
