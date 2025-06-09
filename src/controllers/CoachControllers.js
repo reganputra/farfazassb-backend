@@ -1,4 +1,5 @@
 import prisma from "../config/db.js";
+import { hashPassword } from "../utils/passwordUtil.js";
 
 class CoachControllers {
   async getAllCoaches(req, res) {
@@ -48,19 +49,28 @@ class CoachControllers {
 
   async createCoach(req, res) {
     try {
-      const { name } = req.body;
-      const photoUrl = req.file.location;
+      const { name, email, telp, gender, password } = req.body;
+      const photoUrl = req.file?.location;
 
-      const coach = await prisma.coach.create({
+      const userExists = await prisma.user.findUnique({ where: { email } });
+      if (userExists) {
+        return res.status(400).json({ message: "Coach already exists" });
+      }
+
+      const coach = await prisma.user.create({
         data: {
           name,
+          email,
+          telp,
+          gender,
+          password: await hashPassword(password),
+          role: "COACH",
           photoUrl,
         },
       });
 
       return res.status(201).json(coach);
     } catch (error) {
-      console.error("Error creating coach:", error);
       return res.status(500).json({ message: "Server error" });
     }
   }
@@ -68,14 +78,14 @@ class CoachControllers {
   async updateCoach(req, res) {
     try {
       const { id } = req.params;
-      const { name, email, password,telp,gender } = req.body;
+      const { name, email, password, telp, gender } = req.body;
       const photoUrl = req.file?.location;
 
       const dataToUpdate = {
         name,
         email,
         telp,
-        gender
+        gender,
       };
 
       if (photoUrl) {
@@ -102,8 +112,13 @@ class CoachControllers {
     try {
       const { id } = req.params;
 
-      await prisma.coach.delete({
-        where: { id: parseInt(id) },
+      await prisma.user.delete({
+        where: {
+          id: parseInt(id),
+          AND: {
+            role: "COACH",
+          },
+        },
       });
 
       return res.status(200).json({ message: "Coach deleted successfully" });

@@ -23,7 +23,7 @@ class Validate {
       name: Joi.string().required(),
       parentIds: Joi.array().items(Joi.number()).optional(),
       age: Joi.string().required(),
-      gender: Joi.string().valid("L", "P").required(), 
+      gender: Joi.string().valid("L", "P").required(),
       level: Joi.string().required(),
       tanggalLahir: Joi.date().required(),
       tempatLahir: Joi.string().required(),
@@ -53,6 +53,14 @@ class Validate {
   static get coachSchema() {
     return Joi.object({
       name: Joi.string().required(),
+      email: Joi.string().email().required(),
+      telp: Joi.string()
+        .pattern(/^[0-9]+$/)
+        .min(10)
+        .max(15)
+        .required(),
+      gender: Joi.string().valid("Laki-Laki", "Perempuan").required(),
+      password: Joi.string().min(6).required(),
     });
   }
 
