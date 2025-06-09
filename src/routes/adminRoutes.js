@@ -26,7 +26,7 @@ router.get('/students', StudentController.getAllStudents);
 router.get('/students/coach/:coachId', StudentController.getAllStudentsByCoach);
 router.get('/students/:id', StudentController.getStudentById);
 router.post('/students',upload.single('photo'),parseArrayFields(['parentIds']),validateBody(Validate.studentSchema) ,StudentController.createStudent);
-router.put('/students/:id', StudentController.updateStudent);
+router.put('/students/:id', upload.single('photo'),StudentController.updateStudent);
 router.delete('/students/:id', StudentController.deleteStudent);
 
 // Staff routes
