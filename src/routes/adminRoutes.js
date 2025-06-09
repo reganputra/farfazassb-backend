@@ -36,9 +36,10 @@ router.put('/staff/:id', StaffController.updateStaff);
 router.delete('/staff/:id', StaffController.deleteStaff);
 
 // Coach routes
+router.get('/coaches',CoachController.getAllCoaches)
 router.get('/coaches/:id', CoachController.getCoachesById);
 router.post('/coaches',upload.single('photo'),validateBody(Validate.coachSchema),CoachController.createCoach);
-router.put('/coaches/:id', CoachController.updateCoach);
+router.put('/coaches/:id',upload.single('photo'), CoachController.updateCoach);
 router.delete('/coaches/:id', CoachController.deleteCoach);
 
 
