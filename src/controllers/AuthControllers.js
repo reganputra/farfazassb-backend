@@ -28,13 +28,14 @@ class AuthControllers {
                 }
             });
 
-            const token = jwt.sign({ userId: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
+            const token = jwt.sign({ userId: user.id,name: user.name, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
 
             return res.status(201).json({
                 message: 'User registered successfully',
                 token,
                 user: {
                     id: user.id,
+                    name: user.name,
                     email: user.email,
                     role: user.role
                 }
@@ -58,13 +59,14 @@ class AuthControllers {
                 return res.status(400).json({ message: 'Invalid credentials' });
             }
 
-            const token = jwt.sign({ userId: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
+            const token = jwt.sign({ userId: user.id,name: user.name ,role: user.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
 
             return res.status(200).json({
                 message: 'Login successful',
                 token,
                 user: {
                     id: user.id,
+                    name: user.name,
                     email: user.email,
                     role: user.role
                 }
