@@ -35,9 +35,87 @@ class Validate {
   // Grade
   static get gradeSchema() {
     return Joi.object({
-      subject: Joi.string().required(),
-      score: Joi.number().min(0).max(100).required(),
+      date: Joi.date().required(),
       studentId: Joi.number().required(),
+      coachId: Joi.number().required(),
+
+      // Antropometri
+      tinggiBadan: Joi.number().required(),
+      beratBadan: Joi.number().required(),
+      bmi: Joi.number().required(),
+      kategoriBMI: Joi.string().valid('NORMAL', 'UNDERWEIGHT', 'OVERWEIGHT').required(),
+      tinggiDuduk: Joi.number().required(),
+      panjangTungkai: Joi.number().required(),
+      rentangLengan: Joi.number().required(),
+
+      // Fisiologi
+      denyutNadiIstirahat: Joi.number().required(),
+      saturasiOksigen: Joi.number().required(),
+
+      // Biomotor
+      standingBoardJump: Joi.number().required(),
+      kecepatan: Joi.number().required(),
+      dayaTahan: Joi.number().required(),
+
+      // Keterampilan (1–4)
+      controllingKanan: Joi.number().integer().min(1).max(4).required(),
+      controllingKiri: Joi.number().integer().min(1).max(4).required(),
+      dribbling: Joi.number().integer().min(1).max(4).required(),
+      longpassKanan: Joi.number().integer().min(1).max(4).required(),
+      longpassKiri: Joi.number().integer().min(1).max(4).required(),
+      shortpassKanan: Joi.number().integer().min(1).max(4).required(),
+      shortpassKiri: Joi.number().integer().min(1).max(4).required(),
+      shootingKanan: Joi.number().integer().min(1).max(4).required(),
+      shootingKiri: Joi.number().integer().min(1).max(4).required(),
+
+      // Psikologi (1–4)
+      disiplin: Joi.number().integer().min(1).max(4).required(),
+      komitmen: Joi.number().integer().min(1).max(4).required(),
+      percayaDiri: Joi.number().integer().min(1).max(4).required(),
+
+      // Tambahan
+      injuryDetail: Joi.string().optional().allow(''),
+      comment: Joi.string().optional().allow('')
+    });
+  }
+
+  static get updateGradeSchema() {
+    return Joi.object({
+      date: Joi.date().optional(),
+      studentId: Joi.number().optional(),
+      coachId: Joi.number().optional(),
+
+      tinggiBadan: Joi.number().optional(),
+      beratBadan: Joi.number().optional(),
+      bmi: Joi.number().optional(),
+      kategoriBMI: Joi.string().valid('NORMAL', 'UNDERWEIGHT', 'OVERWEIGHT').optional(),
+      tinggiDuduk: Joi.number().optional(),
+      panjangTungkai: Joi.number().optional(),
+      rentangLengan: Joi.number().optional(),
+
+      denyutNadiIstirahat: Joi.number().optional(),
+      saturasiOksigen: Joi.number().optional(),
+
+      standingBoardJump: Joi.number().optional(),
+      kecepatan: Joi.number().optional(),
+      dayaTahan: Joi.number().optional(),
+
+      controllingKanan: Joi.number().integer().min(1).max(4).optional(),
+      controllingKiri: Joi.number().integer().min(1).max(4).optional(),
+      dribbling: Joi.number().integer().min(1).max(4).optional(),
+      longpassKanan: Joi.number().integer().min(1).max(4).optional(),
+      longpassKiri: Joi.number().integer().min(1).max(4).optional(),
+      shortpassKanan: Joi.number().integer().min(1).max(4).optional(),
+      shortpassKiri: Joi.number().integer().min(1).max(4).optional(),
+      shootingKanan: Joi.number().integer().min(1).max(4).optional(),
+      shootingKiri: Joi.number().integer().min(1).max(4).optional(),
+
+      disiplin: Joi.number().integer().min(1).max(4).optional(),
+      komitmen: Joi.number().integer().min(1).max(4).optional(),
+      percayaDiri: Joi.number().integer().min(1).max(4).optional(),
+
+      injuryDetail: Joi.string().allow('').optional(),
+      comment: Joi.string().allow('').optional()
     });
   }
 
