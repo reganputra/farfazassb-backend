@@ -42,6 +42,7 @@ class AttendanceControllers {
                             name: true,
                             gender : true,
                             coachId: true,
+                            level :true
                         }
                     }
                 }
@@ -71,6 +72,7 @@ class AttendanceControllers {
                             id: true,
                             name: true,
                             coachId: true,
+                            level :true
                         }
                     }
                 }
@@ -105,6 +107,7 @@ class AttendanceControllers {
                             name: true,
                             gender:true,
                             coachId: true,
+                            level :true
                         }
                     }
                 }
