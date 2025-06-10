@@ -216,7 +216,7 @@ class StudentControllers {
         prisma.grade.deleteMany({ where: { studentId: parseInt(id) } }),
         prisma.attendance.deleteMany({ where: { studentId: parseInt(id) } }),
         prisma.student.delete({ where: { id: parseInt(id) } }),
-      ]); // delete all related grades and attendance records before deleting the student
+      ]); 
 
       return res.status(200).json({ message: "Student deleted successfully" });
     } catch (error) {

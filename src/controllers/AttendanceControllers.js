@@ -29,6 +29,35 @@ class AttendanceControllers {
 
     }
 
+    async getAttendanceByDate (req, res) {
+        try {
+            const { date } = req.params;
+
+            const attendance = await prisma.attendance.findMany({
+                where: { date : new Date(date) },
+                include: {
+                    student: {
+                        select: {
+                            id: true,
+                            name: true,
+                            gender : true,
+                        }
+                    }
+                }
+            });
+
+            if (!attendance) {
+                return res.status(404).json({ message: 'Attendance record not found' });
+            }
+
+            return res.status(200).json(attendance);
+        } catch (error) {
+            console.error('Error fetching attendance record:', error);
+            return res.status(500).json({ message: 'Server error' });
+        }
+
+    }
+
     async getAttendanceById (req, res) {
         try {
             const { id } = req.params;
@@ -71,7 +100,8 @@ class AttendanceControllers {
                     student: {
                         select: {
                             id: true,
-                            name: true
+                            name: true,
+                            gender:true,
                         }
                     }
                 }
@@ -101,7 +131,8 @@ class AttendanceControllers {
                     student: {
                         select: {
                             id: true,
-                            name: true
+                            name: true,
+                            gender : true,
                         }
                     }
                 }
