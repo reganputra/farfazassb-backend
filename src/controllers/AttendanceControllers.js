@@ -41,6 +41,7 @@ class AttendanceControllers {
                             id: true,
                             name: true,
                             gender : true,
+                            coachId: true,
                         }
                     }
                 }
@@ -68,7 +69,8 @@ class AttendanceControllers {
                     student: {
                         select: {
                             id: true,
-                            name: true
+                            name: true,
+                            coachId: true,
                         }
                     }
                 }
@@ -102,6 +104,7 @@ class AttendanceControllers {
                             id: true,
                             name: true,
                             gender:true,
+                            coachId: true,
                         }
                     }
                 }
@@ -133,6 +136,7 @@ class AttendanceControllers {
                             id: true,
                             name: true,
                             gender : true,
+                            coachId: true,
                         }
                     }
                 }
