@@ -60,6 +60,7 @@ router.delete('/grades/:id', GradeController.deleteGrade);
 // Attendance routes
 router.get('/students/:studentId/attendance', AttendanceController.getAttendanceByStudentId);
 router.get('/attendance/:id', AttendanceController.getAttendanceById);
+router.get('/attendance/date/:date', AttendanceController.getAttendanceByDate);
 router.post('/attendance',validateBody(Validate.attendanceSchema) ,AttendanceController.createAttendance);
 router.put('/attendance/:id', AttendanceController.updateAttendance);
 router.delete('/attendance/:id', AttendanceController.deleteAttendance);
