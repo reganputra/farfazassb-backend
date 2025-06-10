@@ -3,23 +3,25 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  // directUrl = env("DIRECT_URL")
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  email     String    @unique
-  password  String
-  role      Role
-  telp      String?
-  name      String?
-  photoUrl  String?
-  gender    String?
+  id       Int     @id @default(autoincrement())
+  email    String  @unique
+  password String
+  role     Role
+  telp     String?
+  name     String?
+  photoUrl String?
+  gender   String?
 
-  parentOf  Student[] @relation("ParentStudents") 
-  CoachOf   Student[] @relation("CoachStudents") 
+  parentOf Student[] @relation("ParentStudents")
+  CoachOf  Student[] @relation("CoachStudents")
+  Grade    Grade[]
+
   @@map("users")
 }
 
@@ -34,15 +36,15 @@ model Student {
   tanggalLahir DateTime
   tempatLahir  String
 
-  coachId      Int?
-  coach        User?     @relation("CoachStudents", fields: [coachId], references: [id])
+  coachId Int?
+  coach   User? @relation("CoachStudents", fields: [coachId], references: [id])
 
-  parentId     Int?
-  parent       User?    @relation("ParentStudents", fields: [parentId], references: [id])
+  parentId Int?
+  parent   User? @relation("ParentStudents", fields: [parentId], references: [id])
 
-  achievement  Achievement[]
-  attendance   Attendance[]
-  grades       Grade[]
+  achievement Achievement[]
+  attendance  Attendance[]
+  grades      Grade[]
 
   @@map("students")
 }
@@ -74,11 +76,49 @@ model Achievement {
 }
 
 model Grade {
-  id        Int     @id @default(autoincrement())
-  subject   String
-  score     Float
+  id        Int      @id @default(autoincrement())
+  date      DateTime // tanggal tes
+  student   Student  @relation(fields: [studentId], references: [id])
   studentId Int
-  student   Student @relation(fields: [studentId], references: [id])
+  coach     User     @relation(fields: [coachId], references: [id])
+  coachId   Int
+
+  // Antropometri
+  tinggiBadan    Float
+  beratBadan     Float
+  bmi            Float
+  kategoriBMI    BMI
+  tinggiDuduk    Float
+  panjangTungkai Float
+  rentangLengan  Float
+
+  // Fisiologi
+  denyutNadiIstirahat Float
+  saturasiOksigen     Float
+
+  // Biomotor
+  standingBoardJump Float
+  kecepatan         Float
+  dayaTahan         Float
+
+  // Keterampilan (skala 1–4)
+  controllingKanan Int
+  controllingKiri  Int
+  dribbling        Int
+  longpassKanan    Int
+  longpassKiri     Int
+  shortpassKanan   Int
+  shortpassKiri    Int
+  shootingKanan    Int
+  shootingKiri     Int
+
+  // Psikologi (skala 1–4)
+  disiplin    Int
+  komitmen    Int
+  percayaDiri Int
+
+  injuryDetail String?
+  comment      String?
 
   @@map("grades")
 }
