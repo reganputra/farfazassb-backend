@@ -54,7 +54,7 @@ router.delete('/achievements/:id', AchievementController.deleteAchievement);
 router.get('/students/:studentId/grades', GradeController.getGradesByStudentId);
 router.get('/grades/:id', GradeController.getGradeById);
 router.post('/grades',validateBody(Validate.gradeSchema) ,GradeController.addGrade);
-router.put('/grades/:id', GradeController.updateGrade);
+router.put('/grades/:id', validateBody(Validate.updateGradeSchema), GradeController.updateGrade);
 router.delete('/grades/:id', GradeController.deleteGrade);
 
 // Attendance routes
