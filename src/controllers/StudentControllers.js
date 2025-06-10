@@ -72,7 +72,13 @@ class StudentControllers {
         include: {
           grades: true,
           attendance: true,
-          parents: {
+          parent: {
+            select: {
+              id: true,
+              email: true,
+            },
+          },
+          coach: {
             select: {
               id: true,
               email: true,
@@ -149,47 +155,58 @@ class StudentControllers {
 }
 
   async updateStudent(req, res) {
-    try {
-      const { id } = req.params;
-      const { name, parentIds } = req.body;
+  try {
+    const { id } = req.params;
+    const {
+      name,
+      parentId,
+      coachId,
+      age,
+      gender,
+      level,
+      tanggalLahir,
+      tempatLahir,
+      kategoriBMI,
+    } = req.body;
 
-      // Prepare update data
-      let updateData = {};
-      if (name) updateData.name = name;
+    const data = {
+      ...(name && { name }),
+      ...(req.file?.location && { photoUrl: req.file.location }),
+      ...(age && { age: parseInt(age) }),
+      ...(gender && { gender }),
+      ...(level && { level }),
+      ...(tanggalLahir && { tanggalLahir: new Date(tanggalLahir) }),
+      ...(tempatLahir && { tempatLahir }),
+      ...(kategoriBMI && { kategoriBMI }),
+    };
 
-      // Handle parent relationships in a single operation
-      if (Array.isArray(parentIds)) {
-        if (parentIds.length > 0) {
-          updateData.parents = {
-            set: parentIds.map((id) => ({ id: parseInt(id) })),
-          };
-        } else {
-          updateData.parents = {
-            set: [], // delete all children relation if empty
-          };
-        }
-      }
-
-      // Update student and return the updated student in a single query
-      const updatedStudent = await prisma.student.update({
-        where: { id: parseInt(id) },
-        data: updateData,
-        include: {
-          parents: {
-            select: {
-              id: true,
-              email: true,
-            },
-          },
-        },
-      });
-
-      return res.status(200).json(updatedStudent);
-    } catch (error) {
-      console.error("Error updating student:", error);
-      return res.status(500).json({ message: "Server error" });
+    if (parentId) {
+      data.parent = {
+        connect: { id: parseInt(parentId) },
+      };
     }
+
+    if (coachId) {
+      data.coach = {
+        connect: { id: parseInt(coachId) },
+      };
+    }
+
+    const student = await prisma.student.update({
+      where: { id: parseInt(id) },
+      data,
+      include: {
+        parent: { select: { id: true, email: true } },
+        coach: { select: { id: true, email: true } },
+      },
+    });
+
+    return res.status(200).json(student);
+  } catch (error) {
+    console.error("Error updating student:", error);
+    return res.status(500).json({ message: "Server error" });
   }
+}
 
   async deleteStudent(req, res) {
     try {
