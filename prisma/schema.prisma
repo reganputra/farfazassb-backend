@@ -17,10 +17,12 @@ model User {
   name     String?
   photoUrl String?
   gender   String?
+  address  String?
 
   parentOf Student[] @relation("ParentStudents")
   CoachOf  Student[] @relation("CoachStudents")
-  Grade    Grade[]
+  TestOf   Test[]    @relation("CoachTests")
+  grades   Grade[]  
 
   @@map("users")
 }
@@ -83,6 +85,9 @@ model Grade {
   coach     User     @relation(fields: [coachId], references: [id])
   coachId   Int
 
+  test      Test?    @relation("TestGrades", fields: [testId], references: [id])
+  testId    Int?
+
   // Antropometri
   tinggiBadan    Float
   beratBadan     Float
@@ -121,6 +126,20 @@ model Grade {
   comment      String?
 
   @@map("grades")
+}
+
+model Test {
+  id        Int      @id @default(autoincrement())
+  name      String
+  date      DateTime
+
+  coachId   Int
+  coach     User     @relation("CoachTests",fields: [coachId], references: [id])
+  
+  grades  Grade[]  @relation("TestGrades")
+
+
+  @@map("tests")
 }
 
 model Attendance {

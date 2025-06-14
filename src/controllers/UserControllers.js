@@ -3,29 +3,35 @@ import {hashPassword} from "../utils/passwordUtil.js";
 
 class UserControllers {
 
-    async getAllUsers(req, res) {
-        try {
-            const users = await prisma.user.findMany({
-                select: {
-                    id: true,
-                    email: true,
-                    role: true,
-                    parentOf: {
-                        select: {
-                            id: true,
-                            name: true
-                        }
+async getAllUsers(req, res) {
+    try {
+        const users = await prisma.user.findMany({
+            where: {
+                role: 'USER'
+            },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                role: true,
+                telp: true,
+                address: true,
+                parentOf: {
+                    select: {
+                        id: true,
+                        name: true
                     }
                 }
-            });
+            }
+        });
 
-            return res.status(200).json(users);
-        } catch (error) {
-            console.error('Error fetching users:', error);
-            return res.status(500).json({ message: 'Server error' });
-        }
-
+        return res.status(200).json(users);
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        return res.status(500).json({ message: 'Server error' });
     }
+}
+
 
     async getUserById (req, res) {
         try {
@@ -59,50 +65,41 @@ class UserControllers {
     }
 
     async createUser (req, res) {
-        try {
-            const { email, password, role, childrenIds = [] } = req.body;
+    try {
+        const { name, email, password, role, address, telp } = req.body;
 
-            // Check if user already exists
-            const userExists = await prisma.user.findUnique({ where: { email } });
-            if (userExists) {
-                return res.status(400).json({ message: 'User already exists' });
-            }
-
-            // Create new user with hashed password
-            const data = {
-                email,
-                password: await hashPassword(password),
-                role
-            };
-
-            if (childrenIds.length > 0) {
-                data.parentOf = {
-                    connect: childrenIds.map(id => ({ id: parseInt(id) }))
-                };
-            }
-
-            const user = await prisma.user.create({
-                data,
-                select: {
-                    id: true,
-                    email: true,
-                    role: true,
-                    parentOf: {
-                        select: {
-                            id: true,
-                            name: true
-                        }
-                    }
-                }
-            });
-
-            return res.status(201).json(user);
-        } catch (error) {
-            console.error('Error creating user:', error);
-            return res.status(500).json({ message: 'Server error' });
+        const userExists = await prisma.user.findUnique({ where: { email } });
+        if (userExists) {
+            return res.status(400).json({ message: 'User already exists' });
         }
 
+        const data = {
+            name,
+            email,
+            password: await hashPassword(password),
+            role,
+            address,
+            telp
+        };
+
+        const user = await prisma.user.create({
+            data,
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                role: true,
+                address: true,
+                telp: true
+            }
+        });
+
+        return res.status(201).json(user);
+    } catch (error) {
+        console.error('Error creating user:', error);
+        return res.status(500).json({ message: 'Server error' });
     }
+}
 
     async updateUser (req, res) {
         try {

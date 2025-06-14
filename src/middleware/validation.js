@@ -31,19 +31,29 @@ class Validate {
       kategoriBMI: Joi.string().required(),
     });
   }
+  // Test
+  static get createTestSchema() {
+    return Joi.object({
+      name: Joi.string().min(3).max(100).required(),
+      date: Joi.date().iso().required(),
+      coachId: Joi.number().integer().positive().required(),
+    });
+  }
 
   // Grade
   static get gradeSchema() {
     return Joi.object({
       date: Joi.date().required(),
       studentId: Joi.number().required(),
-      coachId: Joi.number().required(),
+      testId: Joi.number().required(), // ← diganti dari coachId ke testId
 
       // Antropometri
       tinggiBadan: Joi.number().required(),
       beratBadan: Joi.number().required(),
       bmi: Joi.number().required(),
-      kategoriBMI: Joi.string().valid('NORMAL', 'UNDERWEIGHT', 'OVERWEIGHT').required(),
+      kategoriBMI: Joi.string()
+        .valid("NORMAL", "UNDERWEIGHT", "OVERWEIGHT")
+        .required(),
       tinggiDuduk: Joi.number().required(),
       panjangTungkai: Joi.number().required(),
       rentangLengan: Joi.number().required(),
@@ -74,8 +84,8 @@ class Validate {
       percayaDiri: Joi.number().integer().min(1).max(4).required(),
 
       // Tambahan
-      injuryDetail: Joi.string().optional().allow(''),
-      comment: Joi.string().optional().allow('')
+      injuryDetail: Joi.string().optional().allow(""),
+      comment: Joi.string().optional().allow(""),
     });
   }
 
@@ -83,12 +93,13 @@ class Validate {
     return Joi.object({
       date: Joi.date().optional(),
       studentId: Joi.number().optional(),
-      coachId: Joi.number().optional(),
 
       tinggiBadan: Joi.number().optional(),
       beratBadan: Joi.number().optional(),
       bmi: Joi.number().optional(),
-      kategoriBMI: Joi.string().valid('NORMAL', 'UNDERWEIGHT', 'OVERWEIGHT').optional(),
+      kategoriBMI: Joi.string()
+        .valid("NORMAL", "UNDERWEIGHT", "OVERWEIGHT")
+        .optional(),
       tinggiDuduk: Joi.number().optional(),
       panjangTungkai: Joi.number().optional(),
       rentangLengan: Joi.number().optional(),
@@ -114,8 +125,8 @@ class Validate {
       komitmen: Joi.number().integer().min(1).max(4).optional(),
       percayaDiri: Joi.number().integer().min(1).max(4).optional(),
 
-      injuryDetail: Joi.string().allow('').optional(),
-      comment: Joi.string().allow('').optional()
+      injuryDetail: Joi.string().allow("").optional(),
+      comment: Joi.string().allow("").optional(),
     });
   }
 
@@ -163,10 +174,12 @@ class Validate {
   // User
   static get userSchema() {
     return Joi.object({
+      name: Joi.string().min(2).required(),
       email: Joi.string().email().required(),
       password: Joi.string().min(6).required(),
       role: Joi.string().valid("SUPER_ADMIN", "COACH", "USER").required(),
-      childrenIds: Joi.array().items(Joi.number()).optional(),
+      telp: Joi.string().min(8).required(),
+      address: Joi.string().min(5).required(),
     });
   }
 }
