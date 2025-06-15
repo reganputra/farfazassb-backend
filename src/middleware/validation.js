@@ -156,12 +156,16 @@ class Validate {
 
   // Achievement
   static get achievementSchema() {
-    return Joi.object({
-      title: Joi.string().required(),
-      year: Joi.number().required(),
-      studentId: Joi.number().allow(null).optional(),
-    });
-  }
+  return Joi.object({
+    title: Joi.string().required(),
+    event: Joi.string().required(),
+    date: Joi.date().required(),
+    desc: Joi.string().required(),
+    level: Joi.string().required(),
+    place: Joi.number().integer().required(),
+    studentId: Joi.number().integer().allow(null).optional(),
+  });
+}
 
   // Staff
   static get staffSchema() {

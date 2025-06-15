@@ -67,6 +67,7 @@ router.put("/coaches/:id", upload.single("photo"), CoachController.updateCoach);
 router.delete("/coaches/:id", CoachController.deleteCoach);
 
 // Achievement routes
+router.get("/achievements",AchievementController.getAllAchievements)
 router.get("/achievements/:id", AchievementController.getAchievementById);
 router.post(
   "/achievements",

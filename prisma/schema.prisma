@@ -76,8 +76,13 @@ model Coach {
 model Achievement {
   id        Int      @id @default(autoincrement())
   title     String
-  year      Int
   studentId Int?
+  date      DateTime
+  desc      String
+  level     String
+  place     Int
+  event     String
+
   student   Student? @relation(fields: [studentId], references: [id])
 
   @@map("achievements")
