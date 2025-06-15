@@ -18,11 +18,13 @@ model User {
   photoUrl String?
   gender   String?
   address  String?
+  status   Boolean?
 
   parentOf Student[] @relation("ParentStudents")
   CoachOf  Student[] @relation("CoachStudents")
   TestOf   Test[]    @relation("CoachTests")
   grades   Grade[]  
+  createAt DateTime @default(now())
 
   @@map("users")
 }
@@ -31,6 +33,10 @@ model Student {
   id           Int      @id @default(autoincrement())
   name         String
   photoUrl     String?
+  kk           String?
+  koperasi     String?
+  akta         String?
+  bpjs         String?
   age          Int
   gender       Gender
   kategoriBMI  BMI

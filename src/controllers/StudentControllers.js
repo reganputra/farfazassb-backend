@@ -98,7 +98,7 @@ class StudentControllers {
     }
   }
 
-  async createStudent(req, res) {
+async createStudent(req, res) {
   try {
     const {
       name,
@@ -112,9 +112,15 @@ class StudentControllers {
       kategoriBMI,
     } = req.body;
 
+    const files = req.files;
+
     const data = {
       name,
-      photoUrl: req.file?.location,
+      photoUrl: files?.photo?.[0]?.location,
+      kk: files?.kk?.[0]?.location,
+      koperasi: files?.koperasi?.[0]?.location,
+      akta: files?.akta?.[0]?.location,
+      bpjs: files?.bpjs?.[0]?.location,
       age: parseInt(age),
       gender,
       level,
@@ -154,7 +160,7 @@ class StudentControllers {
   }
 }
 
-  async updateStudent(req, res) {
+async updateStudent(req, res) {
   try {
     const { id } = req.params;
     const {
@@ -169,9 +175,15 @@ class StudentControllers {
       kategoriBMI,
     } = req.body;
 
+    const files = req.files;
+
     const data = {
       ...(name && { name }),
-      ...(req.file?.location && { photoUrl: req.file.location }),
+      ...(files?.photo?.[0]?.location && { photoUrl: files.photo[0].location }),
+      ...(files?.kk?.[0]?.location && { kk: files.kk[0].location }),
+      ...(files?.koperasi?.[0]?.location && { koperasi: files.koperasi[0].location }),
+      ...(files?.akta?.[0]?.location && { akta: files.akta[0].location }),
+      ...(files?.bpjs?.[0]?.location && { bpjs: files.bpjs[0].location }),
       ...(age && { age: parseInt(age) }),
       ...(gender && { gender }),
       ...(level && { level }),

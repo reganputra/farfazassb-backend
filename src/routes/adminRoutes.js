@@ -23,14 +23,26 @@ router.get("/students/coach/:coachId", StudentController.getAllStudentsByCoach);
 router.get("/students/:id", StudentController.getStudentById);
 router.post(
   "/students",
-  upload.single("photo"),
+  upload.fields([
+    { name: "photo", maxCount: 1 },
+    { name: "kk", maxCount: 1 },
+    { name: "koperasi", maxCount: 1 },
+    { name: "akta", maxCount: 1 },
+    { name: "bpjs", maxCount: 1 },
+  ]),
   parseArrayFields(["parentIds"]),
   validateBody(Validate.studentSchema),
   StudentController.createStudent
 );
 router.put(
   "/students/:id",
-  upload.single("photo"),
+  upload.fields([
+    { name: "photo", maxCount: 1 },
+    { name: "kk", maxCount: 1 },
+    { name: "koperasi", maxCount: 1 },
+    { name: "akta", maxCount: 1 },
+    { name: "bpjs", maxCount: 1 },
+  ]),
   StudentController.updateStudent
 );
 router.delete("/students/:id", StudentController.deleteStudent);
@@ -44,6 +56,7 @@ router.delete("/staff/:id", StaffController.deleteStaff);
 
 // Coach routes
 router.get("/coaches", CoachController.getAllCoaches);
+router.get("/coaches/:id", CoachController.getCoachesById);
 router.post(
   "/coaches",
   upload.single("photo"),

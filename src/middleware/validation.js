@@ -45,7 +45,7 @@ class Validate {
     return Joi.object({
       date: Joi.date().required(),
       studentId: Joi.number().required(),
-      testId: Joi.number().required(), // ← diganti dari coachId ke testId
+      testId: Joi.number().required(),
 
       // Antropometri
       tinggiBadan: Joi.number().required(),
