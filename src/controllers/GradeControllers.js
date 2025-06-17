@@ -158,100 +158,135 @@ class GradeControllers {
     }
   }
 
-  async getTestGradeByStudentId(req, res) {
-    try {
-      const { id, studentId } = req.params;
+async getTestGradeByStudentId(req, res) {
+  try {
+    const { id, studentId } = req.params;
 
-      const test = await prisma.test.findUnique({
-        where: { id: parseInt(id) },
-        select: {
-          id: true,
-          name: true,
-          date: true,
-          coach: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-            },
+    const test = await prisma.test.findUnique({
+      where: { id: parseInt(id) },
+      select: {
+        id: true,
+        name: true,
+        date: true,
+        coach: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
           },
-          grades: {
-            where: {
-              studentId: parseInt(studentId),
-            },
-            select: {
-              id: true,
-              date: true,
-              tinggiBadan: true,
-              beratBadan: true,
-              bmi: true,
-              kategoriBMI: true,
-              tinggiDuduk: true,
-              panjangTungkai: true,
-              rentangLengan: true,
-              denyutNadiIstirahat: true,
-              saturasiOksigen: true,
-              standingBoardJump: true,
-              kecepatan: true,
-              dayaTahan: true,
-              controllingKanan: true,
-              controllingKiri: true,
-              dribbling: true,
-              longpassKanan: true,
-              longpassKiri: true,
-              shortpassKanan: true,
-              shortpassKiri: true,
-              shootingKanan: true,
-              shootingKiri: true,
-              disiplin: true,
-              komitmen: true,
-              percayaDiri: true,
-              injuryDetail: true,
-              comment: true,
-              student: {
-                select: {
-                  id: true,
-                  name: true,
-                  gender: true,
-                  age: true,
-                  level: true,
-                },
+        },
+        grades: {
+          where: {
+            studentId: parseInt(studentId),
+          },
+          select: {
+            id: true,
+            date: true,
+            tinggiBadan: true,
+            beratBadan: true,
+            bmi: true,
+            kategoriBMI: true,
+            tinggiDuduk: true,
+            panjangTungkai: true,
+            rentangLengan: true,
+            denyutNadiIstirahat: true,
+            saturasiOksigen: true,
+            standingBoardJump: true,
+            kecepatan: true,
+            dayaTahan: true,
+            controllingKanan: true,
+            controllingKiri: true,
+            dribbling: true,
+            longpassKanan: true,
+            longpassKiri: true,
+            shortpassKanan: true,
+            shortpassKiri: true,
+            shootingKanan: true,
+            shootingKiri: true,
+            disiplin: true,
+            komitmen: true,
+            percayaDiri: true,
+            injuryDetail: true,
+            comment: true,
+            student: {
+              select: {
+                id: true,
+                name: true,
+                gender: true,
+                age: true,
+                level: true,
               },
             },
           },
         },
-      });
+      },
+    });
 
-      if (!test) {
-        return res.status(404).json({ message: "Tes tidak ditemukan" });
-      }
-
-      const grade = test.grades[0];
-
-      if (!grade) {
-        return res
-          .status(404)
-          .json({ message: "Siswa tidak ditemukan dalam tes ini" });
-      }
-
-      const { student, ...gradeWithoutStudent } = grade;
-
-      return res.status(200).json({
-        id: test.id,
-        name: test.name,
-        date: test.date,
-        coach: test.coach,
-        student,
-        ...gradeWithoutStudent,
-      });
-    } catch (error) {
-      console.error(
-        "Terjadi kesalahan saat mengambil nilai tes berdasarkan siswa:",
-        error
-      );
-      return res.status(500).json({ message: "Terjadi kesalahan pada server" });
+    if (!test) {
+      return res.status(404).json({ message: "Tes tidak ditemukan" });
     }
+
+    const grade = test.grades[0];
+
+    if (!grade) {
+      return res.status(404).json({ message: "Siswa tidak ditemukan dalam tes ini" });
+    }
+
+    const { student, ...data } = grade;
+    const kategorisasi = {
+      antropometri: {
+        tinggiBadan: data.tinggiBadan,
+        beratBadan: data.beratBadan,
+        bmi: data.bmi,
+        kategoriBMI: data.kategoriBMI,
+        tinggiDuduk: data.tinggiDuduk,
+        panjangTungkai: data.panjangTungkai,
+        rentangLengan: data.rentangLengan,
+      },
+      fisiologi: {
+        denyutNadiIstirahat: data.denyutNadiIstirahat,
+        saturasiOksigen: data.saturasiOksigen,
+      },
+      biomotor: {
+        standingBoardJump: data.standingBoardJump,
+        kecepatan: data.kecepatan,
+        dayaTahan: data.dayaTahan,
+      },
+      keterampilan: {
+        controllingKanan: data.controllingKanan,
+        controllingKiri: data.controllingKiri,
+        dribbling: data.dribbling,
+        longpassKanan: data.longpassKanan,
+        longpassKiri: data.longpassKiri,
+        shortpassKanan: data.shortpassKanan,
+        shortpassKiri: data.shortpassKiri,
+        shootingKanan: data.shootingKanan,
+        shootingKiri: data.shootingKiri,
+      },
+      psikologi: {
+        disiplin: data.disiplin,
+        komitmen: data.komitmen,
+        percayaDiri: data.percayaDiri,
+      },
+      catatan: {
+        injuryDetail: data.injuryDetail,
+        comment: data.comment,
+      },
+    };
+
+    return res.status(200).json({
+      id: test.id,
+      name: test.name,
+      date: test.date,
+      coach: test.coach,
+      student,
+      ...kategorisasi
+    });
+  } catch (error) {
+    console.error("Terjadi kesalahan saat mengambil nilai tes berdasarkan siswa:", error);
+    return res.status(500).json({ message: "Terjadi kesalahan pada server" });
   }
+}
 
   async getTestById(req, res) {
     try {
