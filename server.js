@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended : true }))
 app.use(helmet());
 app.use(cors({
-    origin : "http://localhost:5173/"
+    origin : "http://localhost:5173"
 }));
 
 app.use('/api/auth', authRoutes);
@@ -27,7 +27,7 @@ app.use('/api/public', publicRoutes);
 
 
 app.get('/', (req, res) => {
-    res.send('Hello World! updated');
+    res.send('Hello World! cors');
 })
 
 app.listen(port, () => {
