@@ -8,7 +8,7 @@ class GradeControllers {
       if (!name || !date || !coachId) {
         return res
           .status(400)
-          .json({ message: "name, date, and coachId are required." });
+          .json({ message: "Nama, tanggal, dan ID pelatih wajib diisi." });
       }
 
       const newTest = await prisma.test.create({
@@ -23,8 +23,8 @@ class GradeControllers {
 
       return res.status(201).json(newTest);
     } catch (error) {
-      console.error("Error creating test:", error);
-      return res.status(500).json({ message: "Server error" });
+      console.error("Terjadi kesalahan saat membuat tes:", error);
+      return res.status(500).json({ message: "Terjadi kesalahan pada server" });
     }
   }
 
@@ -38,7 +38,7 @@ class GradeControllers {
       });
 
       if (!existingTest) {
-        return res.status(404).json({ message: "Test not found" });
+        return res.status(404).json({ message: "Tes tidak ditemukan" });
       }
 
       const updateData = {};
@@ -50,7 +50,7 @@ class GradeControllers {
       if (Object.keys(updateData).length === 0) {
         return res
           .status(400)
-          .json({ message: "No valid fields provided to update." });
+          .json({ message: "Tidak ada data yang valid untuk diperbarui." });
       }
 
       const updatedTest = await prisma.test.update({
@@ -60,8 +60,60 @@ class GradeControllers {
 
       return res.status(200).json(updatedTest);
     } catch (error) {
-      console.error("Error updating test:", error);
-      return res.status(500).json({ message: "Server error" });
+      console.error("Terjadi kesalahan saat memperbarui tes:", error);
+      return res.status(500).json({ message: "Terjadi kesalahan pada server" });
+    }
+  }
+
+  async getTestsByStudentId(req, res) {
+    try {
+      const { id } = req.params;
+
+      const tests = await prisma.test.findMany({
+        where: {
+          grades: {
+            some: {
+              studentId: parseInt(id),
+            },
+          },
+        },
+        orderBy: {
+          date: "desc",
+        },
+        select: {
+          id: true,
+          name: true,
+          date: true,
+          coach: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          grades: {
+            where: {
+              studentId: parseInt(id),
+            },
+            select: {
+              id: true,
+              date: true,
+              kategoriBMI: true,
+              bmi: true,
+              disiplin: true,
+              komitmen: true,
+              percayaDiri: true,
+            },
+          },
+        },
+      });
+
+      return res.status(200).json(tests);
+    } catch (error) {
+      console.error(
+        "Terjadi kesalahan saat mengambil tes berdasarkan studentId:",
+        error
+      );
+      return res.status(500).json({ message: "Terjadi kesalahan pada server" });
     }
   }
 
@@ -101,8 +153,103 @@ class GradeControllers {
 
       return res.status(200).json(tests);
     } catch (error) {
-      console.error("Error fetching tests:", error);
-      return res.status(500).json({ message: "Server error" });
+      console.error("Terjadi kesalahan saat mengambil semua tes:", error);
+      return res.status(500).json({ message: "Terjadi kesalahan pada server" });
+    }
+  }
+
+  async getTestGradeByStudentId(req, res) {
+    try {
+      const { id, studentId } = req.params;
+
+      const test = await prisma.test.findUnique({
+        where: { id: parseInt(id) },
+        select: {
+          id: true,
+          name: true,
+          date: true,
+          coach: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+          grades: {
+            where: {
+              studentId: parseInt(studentId),
+            },
+            select: {
+              id: true,
+              date: true,
+              tinggiBadan: true,
+              beratBadan: true,
+              bmi: true,
+              kategoriBMI: true,
+              tinggiDuduk: true,
+              panjangTungkai: true,
+              rentangLengan: true,
+              denyutNadiIstirahat: true,
+              saturasiOksigen: true,
+              standingBoardJump: true,
+              kecepatan: true,
+              dayaTahan: true,
+              controllingKanan: true,
+              controllingKiri: true,
+              dribbling: true,
+              longpassKanan: true,
+              longpassKiri: true,
+              shortpassKanan: true,
+              shortpassKiri: true,
+              shootingKanan: true,
+              shootingKiri: true,
+              disiplin: true,
+              komitmen: true,
+              percayaDiri: true,
+              injuryDetail: true,
+              comment: true,
+              student: {
+                select: {
+                  id: true,
+                  name: true,
+                  gender: true,
+                  age: true,
+                  level: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!test) {
+        return res.status(404).json({ message: "Tes tidak ditemukan" });
+      }
+
+      const grade = test.grades[0];
+
+      if (!grade) {
+        return res
+          .status(404)
+          .json({ message: "Siswa tidak ditemukan dalam tes ini" });
+      }
+
+      const { student, ...gradeWithoutStudent } = grade;
+
+      return res.status(200).json({
+        id: test.id,
+        name: test.name,
+        date: test.date,
+        coach: test.coach,
+        student,
+        ...gradeWithoutStudent,
+      });
+    } catch (error) {
+      console.error(
+        "Terjadi kesalahan saat mengambil nilai tes berdasarkan siswa:",
+        error
+      );
+      return res.status(500).json({ message: "Terjadi kesalahan pada server" });
     }
   }
 
@@ -133,7 +280,7 @@ class GradeControllers {
                   name: true,
                   gender: true,
                   age: true,
-                  level : true
+                  level: true,
                 },
               },
             },
@@ -142,13 +289,16 @@ class GradeControllers {
       });
 
       if (!test) {
-        return res.status(404).json({ message: "Test not found" });
+        return res.status(404).json({ message: "Tes tidak ditemukan" });
       }
 
       return res.status(200).json(test);
     } catch (error) {
-      console.error("Error fetching test by ID:", error);
-      return res.status(500).json({ message: "Server error" });
+      console.error(
+        "Terjadi kesalahan saat mengambil tes berdasarkan ID:",
+        error
+      );
+      return res.status(500).json({ message: "Terjadi kesalahan pada server" });
     }
   }
 
@@ -161,17 +311,17 @@ class GradeControllers {
       });
 
       if (!existingTest) {
-        return res.status(404).json({ message: "Test not found" });
+        return res.status(404).json({ message: "Tes tidak ditemukan" });
       }
 
       await prisma.test.delete({
         where: { id: parseInt(id) },
       });
 
-      return res.status(200).json({ message: "Test deleted successfully" });
+      return res.status(200).json({ message: "Tes berhasil dihapus" });
     } catch (error) {
-      console.error("Error deleting test:", error);
-      return res.status(500).json({ message: "Server error" });
+      console.error("Terjadi kesalahan saat menghapus tes:", error);
+      return res.status(500).json({ message: "Terjadi kesalahan pada server" });
     }
   }
 
@@ -189,8 +339,8 @@ class GradeControllers {
 
       return res.status(200).json(grades);
     } catch (error) {
-      console.error("Error fetching grades:", error);
-      return res.status(500).json({ message: "Server error" });
+      console.error("Terjadi kesalahan saat mengambil data nilai:", error);
+      return res.status(500).json({ message: "Terjadi kesalahan pada server" });
     }
   }
 
@@ -207,13 +357,13 @@ class GradeControllers {
       });
 
       if (!grade) {
-        return res.status(404).json({ message: "Grade not found" });
+        return res.status(404).json({ message: "Nilai tidak ditemukan" });
       }
 
       return res.status(200).json(grade);
     } catch (error) {
-      console.error("Error fetching grade:", error);
-      return res.status(500).json({ message: "Server error" });
+      console.error("Terjadi kesalahan saat mengambil nilai:", error);
+      return res.status(500).json({ message: "Terjadi kesalahan pada server" });
     }
   }
 
@@ -257,7 +407,7 @@ class GradeControllers {
       });
 
       if (!test) {
-        return res.status(404).json({ message: "Test not found" });
+        return res.status(404).json({ message: "Tes tidak ditemukan" });
       }
 
       const grade = await prisma.grade.create({
@@ -309,8 +459,8 @@ class GradeControllers {
 
       return res.status(201).json(grade);
     } catch (error) {
-      console.error("Error creating grade:", error);
-      return res.status(500).json({ message: "Server error" });
+      console.error("Terjadi kesalahan saat membuat nilai:", error);
+      return res.status(500).json({ message: "Terjadi kesalahan pada server" });
     }
   }
 
@@ -318,7 +468,6 @@ class GradeControllers {
     try {
       const { id } = req.params;
       const body = req.body;
-
       const data = {};
 
       if (body.date) data.date = new Date(body.date);
@@ -379,8 +528,8 @@ class GradeControllers {
 
       return res.status(200).json(grade);
     } catch (error) {
-      console.error("Error updating grade:", error);
-      return res.status(500).json({ message: "Server error" });
+      console.error("Terjadi kesalahan saat memperbarui nilai:", error);
+      return res.status(500).json({ message: "Terjadi kesalahan pada server" });
     }
   }
 
@@ -392,10 +541,10 @@ class GradeControllers {
         where: { id: parseInt(id) },
       });
 
-      return res.status(200).json({ message: "Grade deleted successfully" });
+      return res.status(200).json({ message: "Nilai berhasil dihapus" });
     } catch (error) {
-      console.error("Error deleting grade:", error);
-      return res.status(500).json({ message: "Server error" });
+      console.error("Terjadi kesalahan saat menghapus nilai:", error);
+      return res.status(500).json({ message: "Terjadi kesalahan pada server" });
     }
   }
 }

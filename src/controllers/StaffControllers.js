@@ -7,8 +7,8 @@ class StaffControllers {
             const staff = await prisma.staff.findMany();
             return res.status(200).json(staff);
         } catch (error) {
-            console.error('Error fetching staff:', error);
-            return res.status(500).json({ message: 'Server error' });
+            console.error('Terjadi kesalahan saat mengambil data staf:', error);
+            return res.status(500).json({ message: 'Terjadi kesalahan pada server' });
         }
     }
 
@@ -20,13 +20,13 @@ class StaffControllers {
             });
 
             if (!staff) {
-                return res.status(404).json({ message: 'Staff member not found' });
+                return res.status(404).json({ message: 'Staf tidak ditemukan' });
             }
 
             return res.status(200).json(staff);
         } catch (error) {
-            console.error('Error fetching staff member:', error);
-            return res.status(500).json({ message: 'Server error' });
+            console.error('Terjadi kesalahan saat mengambil data staf:', error);
+            return res.status(500).json({ message: 'Terjadi kesalahan pada server' });
         }
     }
 
@@ -43,8 +43,8 @@ class StaffControllers {
 
             return res.status(201).json(staff);
         } catch (error) {
-            console.error('Error creating staff member:', error);
-            return res.status(500).json({ message: 'Server error' });
+            console.error('Terjadi kesalahan saat membuat data staf:', error);
+            return res.status(500).json({ message: 'Terjadi kesalahan pada server' });
         }
     }
 
@@ -63,8 +63,8 @@ class StaffControllers {
 
             return res.status(200).json(staff);
         } catch (error) {
-            console.error('Error updating staff member:', error);
-            return res.status(500).json({ message: 'Server error' });
+            console.error('Terjadi kesalahan saat memperbarui data staf:', error);
+            return res.status(500).json({ message: 'Terjadi kesalahan pada server' });
         }
     }
 
@@ -76,10 +76,10 @@ class StaffControllers {
                 where: { id: parseInt(id) }
             });
 
-            return res.status(200).json({ message: 'Staff member deleted successfully' });
+            return res.status(200).json({ message: 'Staf berhasil dihapus' });
         } catch (error) {
-            console.error('Error deleting staff member:', error);
-            return res.status(500).json({ message: 'Server error' });
+            console.error('Terjadi kesalahan saat menghapus data staf:', error);
+            return res.status(500).json({ message: 'Terjadi kesalahan pada server' });
         }
     }
 }

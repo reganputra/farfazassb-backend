@@ -150,22 +150,25 @@ class Validate {
         .max(15)
         .required(),
       gender: Joi.string().valid("Laki-Laki", "Perempuan").required(),
-      password: Joi.string().min(6).required(),
+      password: Joi.string().min(6).required().messages({
+        "string.min": "Kata sandi minimal terdiri dari 6 karakter",
+        "any.required": "Kata sandi wajib diisi",
+      }),
     });
   }
 
   // Achievement
   static get achievementSchema() {
-  return Joi.object({
-    title: Joi.string().required(),
-    event: Joi.string().required(),
-    date: Joi.date().required(),
-    desc: Joi.string().required(),
-    level: Joi.string().required(),
-    place: Joi.number().integer().required(),
-    studentId: Joi.number().integer().allow(null).optional(),
-  });
-}
+    return Joi.object({
+      title: Joi.string().required(),
+      event: Joi.string().required(),
+      date: Joi.date().required(),
+      desc: Joi.string().required(),
+      level: Joi.string().required(),
+      place: Joi.number().integer().required(),
+      studentId: Joi.number().integer().allow(null).optional(),
+    });
+  }
 
   // Staff
   static get staffSchema() {
@@ -180,7 +183,10 @@ class Validate {
     return Joi.object({
       name: Joi.string().min(2).required(),
       email: Joi.string().email().required(),
-      password: Joi.string().min(6).required(),
+      password: Joi.string().min(6).required().messages({
+        "string.min": "Kata sandi minimal terdiri dari 6 karakter",
+        "any.required": "Kata sandi wajib diisi",
+      }),
       role: Joi.string().valid("SUPER_ADMIN", "COACH", "USER").required(),
       telp: Joi.string().min(8).required(),
       address: Joi.string().min(5).required(),

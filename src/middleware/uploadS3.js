@@ -14,7 +14,7 @@ const upload = multer({
             cb(null, `uploads/${Date.now()}-${file.originalname}`);
         }
     }),
-    limits: { fileSize: 8 * 1024 * 1024 }, // Max 8MB
+    limits: { fileSize: 8 * 1024 * 1024 }, 
     fileFilter: (req, file, cb) => {
         const allowedTypes = ['image/jpeg', 'image/png'];
         if (allowedTypes.includes(file.mimetype)) {

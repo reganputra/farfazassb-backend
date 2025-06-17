@@ -2,7 +2,7 @@ import prisma from "../config/db.js";
 
 class AttendanceControllers {
 
-    async getAttendanceByStudentId (req, res) {
+    async getAttendanceByStudentId(req, res) {
         try {
             const { studentId } = req.params;
 
@@ -23,44 +23,42 @@ class AttendanceControllers {
 
             return res.status(200).json(attendance);
         } catch (error) {
-            console.error('Error fetching attendance records:', error);
-            return res.status(500).json({ message: 'Server error' });
+            console.error('Terjadi kesalahan saat mengambil data kehadiran:', error);
+            return res.status(500).json({ message: 'Terjadi kesalahan pada server' });
         }
-
     }
 
-    async getAttendanceByDate (req, res) {
+    async getAttendanceByDate(req, res) {
         try {
             const { date } = req.params;
 
             const attendance = await prisma.attendance.findMany({
-                where: { date : new Date(date) },
+                where: { date: new Date(date) },
                 include: {
                     student: {
                         select: {
                             id: true,
                             name: true,
-                            gender : true,
+                            gender: true,
                             coachId: true,
-                            level :true
+                            level: true
                         }
                     }
                 }
             });
 
             if (!attendance) {
-                return res.status(404).json({ message: 'Attendance record not found' });
+                return res.status(404).json({ message: 'Data kehadiran tidak ditemukan' });
             }
 
             return res.status(200).json(attendance);
         } catch (error) {
-            console.error('Error fetching attendance record:', error);
-            return res.status(500).json({ message: 'Server error' });
+            console.error('Terjadi kesalahan saat mengambil data kehadiran:', error);
+            return res.status(500).json({ message: 'Terjadi kesalahan pada server' });
         }
-
     }
 
-    async getAttendanceById (req, res) {
+    async getAttendanceById(req, res) {
         try {
             const { id } = req.params;
 
@@ -72,22 +70,21 @@ class AttendanceControllers {
                             id: true,
                             name: true,
                             coachId: true,
-                            level :true
+                            level: true
                         }
                     }
                 }
             });
 
             if (!attendance) {
-                return res.status(404).json({ message: 'Attendance record not found' });
+                return res.status(404).json({ message: 'Data kehadiran tidak ditemukan' });
             }
 
             return res.status(200).json(attendance);
         } catch (error) {
-            console.error('Error fetching attendance record:', error);
-            return res.status(500).json({ message: 'Server error' });
+            console.error('Terjadi kesalahan saat mengambil data kehadiran:', error);
+            return res.status(500).json({ message: 'Terjadi kesalahan pada server' });
         }
-
     }
 
     async createAttendance(req, res) {
@@ -105,9 +102,9 @@ class AttendanceControllers {
                         select: {
                             id: true,
                             name: true,
-                            gender:true,
+                            gender: true,
                             coachId: true,
-                            level :true
+                            level: true
                         }
                     }
                 }
@@ -115,14 +112,12 @@ class AttendanceControllers {
 
             return res.status(201).json(attendance);
         } catch (error) {
-            console.error('Error creating attendance record:', error);
-            return res.status(500).json({ message: 'Server error' });
+            console.error('Terjadi kesalahan saat membuat data kehadiran:', error);
+            return res.status(500).json({ message: 'Terjadi kesalahan pada server' });
         }
-
     }
 
-    async updateAttendance (req, res) {
-
+    async updateAttendance(req, res) {
         try {
             const { id } = req.params;
             const { date, present } = req.body;
@@ -138,8 +133,8 @@ class AttendanceControllers {
                         select: {
                             id: true,
                             name: true,
-                            gender : true,
-                            coachId: true,
+                            gender: true,
+                            coachId: true
                         }
                     }
                 }
@@ -147,13 +142,12 @@ class AttendanceControllers {
 
             return res.status(200).json(attendance);
         } catch (error) {
-            console.error('Error updating attendance record:', error);
-            return res.status(500).json({ message: 'Server error' });
+            console.error('Terjadi kesalahan saat memperbarui data kehadiran:', error);
+            return res.status(500).json({ message: 'Terjadi kesalahan pada server' });
         }
-
     }
 
-    async deleteAttendance (req, res) {
+    async deleteAttendance(req, res) {
         try {
             const { id } = req.params;
 
@@ -161,14 +155,12 @@ class AttendanceControllers {
                 where: { id: parseInt(id) }
             });
 
-            return res.status(200).json({ message: 'Attendance record deleted successfully' });
+            return res.status(200).json({ message: 'Data kehadiran berhasil dihapus' });
         } catch (error) {
-            console.error('Error deleting attendance record:', error);
-            return res.status(500).json({ message: 'Server error' });
+            console.error('Terjadi kesalahan saat menghapus data kehadiran:', error);
+            return res.status(500).json({ message: 'Terjadi kesalahan pada server' });
         }
-
     }
-
 }
 
 export default new AttendanceControllers();

@@ -28,8 +28,8 @@ class UserControllers {
 
       return res.status(200).json(users);
     } catch (error) {
-      console.error("Error fetching users:", error);
-      return res.status(500).json({ message: "Server error" });
+      console.error("Terjadi kesalahan saat mengambil data pengguna:", error);
+      return res.status(500).json({ message: "Terjadi kesalahan pada server" });
     }
   }
 
@@ -47,9 +47,7 @@ class UserControllers {
         select: {
           id: true,
           email: true,
-          id: true,
           name: true,
-          email: true,
           role: true,
           telp: true,
           status: true,
@@ -64,13 +62,13 @@ class UserControllers {
       });
 
       if (!user) {
-        return res.status(404).json({ message: "User not found" });
+        return res.status(404).json({ message: "Pengguna tidak ditemukan" });
       }
 
       return res.status(200).json(user);
     } catch (error) {
-      console.error("Error fetching user:", error);
-      return res.status(500).json({ message: "Server error" });
+      console.error("Terjadi kesalahan saat mengambil data pengguna:", error);
+      return res.status(500).json({ message: "Terjadi kesalahan pada server" });
     }
   }
 
@@ -80,7 +78,7 @@ class UserControllers {
 
       const userExists = await prisma.user.findUnique({ where: { email } });
       if (userExists) {
-        return res.status(400).json({ message: "User already exists" });
+        return res.status(400).json({ message: "Pengguna sudah terdaftar" });
       }
 
       const data = {
@@ -108,8 +106,8 @@ class UserControllers {
 
       return res.status(201).json(user);
     } catch (error) {
-      console.error("Error creating user:", error);
-      return res.status(500).json({ message: "Server error" });
+      console.error("Terjadi kesalahan saat membuat pengguna:", error);
+      return res.status(500).json({ message: "Terjadi kesalahan pada server" });
     }
   }
 
@@ -135,12 +133,11 @@ class UserControllers {
           };
         } else {
           updateData.parentOf = {
-            set: [], // delete all children relation if empty
+            set: [],
           };
         }
       }
 
-      // Update user and return the updated user in a single query
       const updatedUser = await prisma.user.update({
         where: { id: parseInt(id) },
         data: updateData,
@@ -159,8 +156,8 @@ class UserControllers {
 
       return res.status(200).json(updatedUser);
     } catch (error) {
-      console.error("Error updating user:", error);
-      return res.status(500).json({ message: "Server error" });
+      console.error("Terjadi kesalahan saat memperbarui data pengguna:", error);
+      return res.status(500).json({ message: "Terjadi kesalahan pada server" });
     }
   }
 
@@ -168,25 +165,23 @@ class UserControllers {
     try {
       const { id } = req.params;
 
-      //  disconnect all relations with students
       await prisma.user.update({
         where: { id: parseInt(id) },
         data: {
           parentOf: {
-            set: [], // Disconnect all children
+            set: [],
           },
         },
       });
 
-      //  delete the user
       await prisma.user.delete({
         where: { id: parseInt(id) },
       });
 
-      return res.status(200).json({ message: "User deleted successfully" });
+      return res.status(200).json({ message: "Pengguna berhasil dihapus" });
     } catch (error) {
-      console.error("Error deleting user:", error);
-      return res.status(500).json({ message: "Server error" });
+      console.error("Terjadi kesalahan saat menghapus pengguna:", error);
+      return res.status(500).json({ message: "Terjadi kesalahan pada server" });
     }
   }
 
@@ -201,6 +196,13 @@ class UserControllers {
             select: {
               id: true,
               name: true,
+              gender: true,
+              age: true,
+              level : true,
+              tanggalLahir: true,
+              tempatLahir: true,
+              kategoriBMI: true,
+              photoUrl: true,
             },
           },
         },
@@ -208,8 +210,8 @@ class UserControllers {
 
       return res.status(200).json(user.parentOf);
     } catch (error) {
-      console.error("Error fetching children:", error);
-      return res.status(500).json({ message: "Server error" });
+      console.error("Terjadi kesalahan saat mengambil data anak:", error);
+      return res.status(500).json({ message: "Terjadi kesalahan pada server" });
     }
   }
 
@@ -218,7 +220,6 @@ class UserControllers {
       const userId = req.user.id;
       const { childId } = req.params;
 
-      // Verify parent-child relationship
       const user = await prisma.user.findUnique({
         where: { id: userId },
         include: {
@@ -234,10 +235,9 @@ class UserControllers {
         (child) => child.id === parseInt(childId)
       );
       if (!isParent) {
-        return res.status(403).json({ message: "Access denied" });
+        return res.status(403).json({ message: "Akses ditolak" });
       }
 
-      // Get child details
       const child = await prisma.student.findUnique({
         where: { id: parseInt(childId) },
         include: {
@@ -251,13 +251,13 @@ class UserControllers {
       });
 
       if (!child) {
-        return res.status(404).json({ message: "Student not found" });
+        return res.status(404).json({ message: "Siswa tidak ditemukan" });
       }
 
       return res.status(200).json(child);
     } catch (error) {
-      console.error("Error fetching child details:", error);
-      return res.status(500).json({ message: "Server error" });
+      console.error("Terjadi kesalahan saat mengambil detail anak:", error);
+      return res.status(500).json({ message: "Terjadi kesalahan pada server" });
     }
   }
 }

@@ -19,8 +19,8 @@ class CoachControllers {
       });
       return res.status(200).json(coaches);
     } catch (error) {
-      console.error("Error fetching coaches:", error);
-      return res.status(500).json({ message: "Server error" });
+      console.error("Terjadi kesalahan saat mengambil data pelatih:", error);
+      return res.status(500).json({ message: "Terjadi kesalahan pada server" });
     }
   }
 
@@ -37,13 +37,13 @@ class CoachControllers {
       });
 
       if (!coach) {
-        return res.status(404).json({ message: "Coach not found" });
+        return res.status(404).json({ message: "Pelatih tidak ditemukan" });
       }
 
       return res.status(200).json(coach);
     } catch (error) {
-      console.error("Error fetching coach:", error);
-      return res.status(500).json({ message: "Server error" });
+      console.error("Terjadi kesalahan saat mengambil data pelatih:", error);
+      return res.status(500).json({ message: "Terjadi kesalahan pada server" });
     }
   }
 
@@ -54,7 +54,7 @@ class CoachControllers {
 
       const userExists = await prisma.user.findUnique({ where: { email } });
       if (userExists) {
-        return res.status(400).json({ message: "Coach already exists" });
+        return res.status(400).json({ message: "Pelatih sudah terdaftar" });
       }
 
       const coach = await prisma.user.create({
@@ -71,7 +71,8 @@ class CoachControllers {
 
       return res.status(201).json(coach);
     } catch (error) {
-      return res.status(500).json({ message: "Server error" });
+      console.error("Terjadi kesalahan saat membuat pelatih:", error);
+      return res.status(500).json({ message: "Terjadi kesalahan pada server" });
     }
   }
 
@@ -103,8 +104,8 @@ class CoachControllers {
 
       return res.status(200).json(coach);
     } catch (error) {
-      console.error("Error updating coach:", error);
-      return res.status(500).json({ message: "Server error" });
+      console.error("Terjadi kesalahan saat memperbarui data pelatih:", error);
+      return res.status(500).json({ message: "Terjadi kesalahan pada server" });
     }
   }
 
@@ -121,10 +122,10 @@ class CoachControllers {
         },
       });
 
-      return res.status(200).json({ message: "Coach deleted successfully" });
+      return res.status(200).json({ message: "Pelatih berhasil dihapus" });
     } catch (error) {
-      console.error("Error deleting coach:", error);
-      return res.status(500).json({ message: "Server error" });
+      console.error("Terjadi kesalahan saat menghapus data pelatih:", error);
+      return res.status(500).json({ message: "Terjadi kesalahan pada server" });
     }
   }
 }

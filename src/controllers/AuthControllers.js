@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import prisma from "../config/db.js";
 import dotenv from "dotenv";
-import {hashPassword, comparePassword} from "../utils/passwordUtil.js";
+import { hashPassword, comparePassword } from "../utils/passwordUtil.js";
 
 dotenv.config();
 
@@ -13,7 +13,7 @@ class AuthControllers {
 
             const userExists = await prisma.user.findUnique({ where: { email } });
             if (userExists) {
-                return res.status(400).json({ message: 'User already exists' });
+                return res.status(400).json({ message: 'Email sudah terdaftar' });
             }
 
             const hashedPassword = await hashPassword(password);
@@ -28,10 +28,14 @@ class AuthControllers {
                 }
             });
 
-            const token = jwt.sign({ userId: user.id,name: user.name, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
+            const token = jwt.sign(
+                { userId: user.id, name: user.name, role: user.role },
+                process.env.JWT_SECRET,
+                { expiresIn: '1d' }
+            );
 
             return res.status(201).json({
-                message: 'User registered successfully',
+                message: 'Pendaftaran berhasil',
                 token,
                 user: {
                     id: user.id,
@@ -40,29 +44,34 @@ class AuthControllers {
                     role: user.role
                 }
             });
-        }catch (error) {
-            
+        } catch (error) {
+            console.error('Terjadi kesalahan saat mendaftar:', error);
+            return res.status(500).json({ message: 'Terjadi kesalahan pada server' });
         }
     }
 
     async login(req, res) {
-        try{
+        try {
             const { email, password } = req.body;
 
             const user = await prisma.user.findUnique({ where: { email } });
             if (!user) {
-                return res.status(400).json({ message: 'Invalid credentials' });
+                return res.status(400).json({ message: 'Email atau kata sandi salah' });
             }
 
             const isPasswordValid = await comparePassword(password, user.password);
             if (!isPasswordValid) {
-                return res.status(400).json({ message: 'Invalid credentials' });
+                return res.status(400).json({ message: 'Email atau kata sandi salah' });
             }
 
-            const token = jwt.sign({ userId: user.id,name: user.name ,role: user.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
+            const token = jwt.sign(
+                { userId: user.id, name: user.name, role: user.role },
+                process.env.JWT_SECRET,
+                { expiresIn: '1d' }
+            );
 
             return res.status(200).json({
-                message: 'Login successful',
+                message: 'Login berhasil',
                 token,
                 user: {
                     id: user.id,
@@ -71,12 +80,11 @@ class AuthControllers {
                     role: user.role
                 }
             });
-        }catch (error) {
-            console.error('Login error:', error);
-            return res.status(500).json({ message: 'Server error' });
+        } catch (error) {
+            console.error('Terjadi kesalahan saat login:', error);
+            return res.status(500).json({ message: 'Terjadi kesalahan pada server' });
         }
     }
-
 }
 
 export default new AuthControllers();
