@@ -114,9 +114,10 @@ class UserControllers {
   async updateUser(req, res) {
     try {
       const { id } = req.params;
-      const { email, password, role, status, childrenIds } = req.body;
+      const { name,email, password, role, status, childrenIds } = req.body;
 
       let updateData = {};
+      if (name) updateData.name = name;
       if (email) updateData.email = email;
       if (password) updateData.password = await hashPassword(password);
       if (role) updateData.role = role;
