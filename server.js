@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended : true }))
 app.use(helmet());
 app.use(cors({
-    origin : "*"
+    origin : "http://localhost:5173/"
 }));
 
 app.use('/api/auth', authRoutes);
