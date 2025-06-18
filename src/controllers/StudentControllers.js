@@ -9,6 +9,8 @@ class StudentControllers {
           id: true,
           name: true,
           photoUrl: true,
+          level: true,
+          age : true
         },
       });
       return res.status(200).json(students);
