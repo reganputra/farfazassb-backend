@@ -1483,4 +1483,6 @@ The API implements role-based access control with the following roles:
 
 ## Contributors
 
+- [Regan Putra Ramadhan](https://github.com/reganputra)
+- [Bayu Setiawan](https://github.com/bayustwn)
 - Kelompok 1
